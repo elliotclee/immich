@@ -7,13 +7,11 @@ import { MicroservicesModule } from './microservices.module';
 import { MetadataExtractionProcessor } from './processors/metadata-extraction.processor';
 
 const logger = new Logger('ImmichMicroservice');
+const port = Number(process.env.MICROSERVICES_PORT) || 3002;
+const envName = (process.env.NODE_ENV || 'development').toUpperCase();
 
 async function bootstrap() {
-  const app = await NestFactory.create(MicroservicesModule, {
-    logger: getLogLevels(),
-  });
-
-  const listeningPort = Number(process.env.MICROSERVICES_PORT) || 3002;
+  const app = await NestFactory.create(MicroservicesModule, { logger: getLogLevels() });
 
   app.useWebSocketAdapter(new RedisIoAdapter(app));
 
@@ -31,12 +29,9 @@ async function bootstrap() {
 
   await metadataService.init();
 
-  await app.listen(listeningPort, () => {
-    const envName = (process.env.NODE_ENV || 'development').toUpperCase();
-    logger.log(
-      `Running Immich Microservices in ${envName} environment - version ${SERVER_VERSION} - Listening on port: ${listeningPort}`,
-    );
-  });
+  await app.listen(port);
+
+  logger.log(`Listening on port ${port} (version=${SERVER_VERSION} mode=${envName})`);
 }
 
 bootstrap();

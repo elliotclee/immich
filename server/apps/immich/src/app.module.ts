@@ -1,10 +1,10 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AssetModule } from './api-v1/asset/asset.module';
 import { AlbumModule } from './api-v1/album/album.module';
 import { AppController } from './app.controller';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TagModule } from './api-v1/tag/tag.module';
-import { DomainModule, SearchService } from '@app/domain';
+import { DomainModule } from '@app/domain';
 import { InfraModule } from '@app/infra';
 import {
   AlbumController,
@@ -56,9 +56,4 @@ import { AppCronJobs } from './app.cron-jobs';
     AppCronJobs,
   ],
 })
-export class AppModule implements OnModuleInit {
-  constructor(private searchService: SearchService) {}
-  async onModuleInit() {
-    await this.searchService.bootstrap();
-  }
-}
+export class AppModule {}
